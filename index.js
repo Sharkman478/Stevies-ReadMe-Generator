@@ -1,6 +1,7 @@
 // TODO: Include packages needed for this application
 const inquirer = require('inquirer');
 const fs = require('fs');
+const generateMarkdown = require('./utils/generateMarkdown.js')
 // TODO: Create an array of questions for user input
 
 const questions = [
@@ -51,23 +52,10 @@ const questions = [
     message: 'Enter your email address:',
   }
 ];
-function writeFile() {
-  inquirer
-    .prompt (questions)
-    .then ((answers) => {
-      writeToFile(answers);
-    })
-    .catch((error) => {
-      if (error.isTtyError) {
-        console.error("Prompt couldn't be rendered in the current environment");
-      } else {
-        console.error("Something else went wrong", error);
-      }
-    })
-};
+
 // TODO: Create a function to write README file
-function writeToFile(answers) {
-    fs.writeFile('./Generated-ReadMes/README.md', JSON.stringify(answers), err=> {
+function writeToFile(filename, answers) {
+    fs.writeFile(filename, answers, err=> {
       if (err) {
         console.error(err);
       } else {
@@ -78,8 +66,19 @@ function writeToFile(answers) {
 
 // TODO: Create a function to initialize app
 function init() {
-  writeFile();
-}
-
+  inquirer
+    .prompt (questions)
+    .then ((answers) => {
+      writeToFile('./Generated-ReadMes/README.md', generateMarkdown(answers));
+    })
+    .catch((error) => {
+      if (error.isTtyError) {
+        console.error("Prompt couldn't be rendered in the current environment");
+      } else {
+        console.error("Something else went wrong", error);
+      }
+    })
+    
+};
 // Function call to initialize app
 init();
